@@ -1,0 +1,57 @@
+
+# dependencies
+*/node_modules
+*/.pnp
+.pnp.js
+
+# Expo
+*/.expo/
+*/dist/
+expo-app/android
+
+# Native
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Build
+*.apk
+
+# Metro
+*/.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+*/.DS_Store
+*.pem
+
+# local env files
+*/.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# testing
+*/coverage
+
+# database
+*/prisma/db.sqlite
+*/prisma/db.sqlite-journal
+
+# next.js
+*/.next/
+*/out/
+next-env.d.ts
+
+# production
+*/build
+
+# vercel
+*/.vercel
