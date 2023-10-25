@@ -1,24 +1,8 @@
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 import { useState } from "react";
-import {
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  View,
-  useColorScheme,
-} from "react-native";
+import { Dimensions, FlatList, View, useColorScheme } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import {
-  Avatar,
-  MD3Colors,
-  Text,
-  MD3DarkTheme,
-  MD3LightTheme,
-  Card,
-  Button,
-} from "react-native-paper";
-import BubbleChart from "../../components/BubbleChart";
-import { pie } from "d3";
+import { Text, MD3DarkTheme, MD3LightTheme, Card } from "react-native-paper";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -53,12 +37,16 @@ export default function Home() {
   ];
 
   // default - largest in piedata programmatically
-  const [focusedData, setFocusedData] = useState(null);
+  const [focusedData, setFocusedData] = useState<{
+    name: string;
+    value: number;
+    color: string;
+  } | null>(null);
 
   return (
-    <View className="flex flex-col px-8 pt-4 w-full">
+    <View className="flex flex-col w-full gap-y-4">
       <View className="flex flex-row pb-4 justify-between items-center"></View>
-      <View className="w-full flex flex-row items-center">
+      <View className="px-8 w-full flex flex-row items-center">
         <View className=" w-[50%]">
           {/* <BubbleChart
             width={Dimensions.get("window").width / 2.2}
@@ -86,6 +74,10 @@ export default function Home() {
               );
             }}
             onPress={(value) => {
+              if (focusedData?.name === value.name) {
+                setFocusedData(null);
+                return;
+              }
               setFocusedData(value);
             }}
           />
@@ -117,6 +109,37 @@ export default function Home() {
               </Text>
             </Card.Content>
           </Card>
+        </View>
+      </View>
+      <View className="w-full">
+        <Text className="px-8 pb-2" variant="titleMedium">
+          Recent Spends
+        </Text>
+        <View className="relative">
+          <FlatList
+            data={[1, 2, 3]}
+            horizontal
+            renderItem={({ item, index }) => (
+              <>
+                {index === 0 ? <View className="w-8" /> : <></>}
+                <Card
+                  className="mr-2 mb-2"
+                  style={{
+                    width: Dimensions.get("window").width / 2,
+                  }}
+                >
+                  <Card.Content className="flex flex-row justify-between items-center">
+                    <View className="flex flex-col">
+                      <Text variant="bodyMedium">Title</Text>
+                      <Text variant="bodySmall">Date Time</Text>
+                    </View>
+                    <Text variant="bodyMedium">$100</Text>
+                  </Card.Content>
+                </Card>
+              </>
+            )}
+            showsHorizontalScrollIndicator={false}
+          />
         </View>
       </View>
     </View>
