@@ -44,7 +44,7 @@ export default function Home() {
   } | null>(null);
 
   return (
-    <View className="flex flex-col w-full gap-y-4">
+    <View className="flex flex-col w-full gap-y-4 flex-1">
       <View className="flex flex-row pb-4 justify-between items-center"></View>
       <View className="px-8 w-full flex flex-row items-center">
         <View className=" w-[50%]">
@@ -57,17 +57,17 @@ export default function Home() {
             data={pieData}
             donut
             focusOnPress
-            radius={90}
-            innerRadius={60}
+            radius={Dimensions.get("window").width / 4 - 25}
+            innerRadius={Dimensions.get("window").width / 4 - 50}
             innerCircleColor={paperTheme.colors.background}
             centerLabelComponent={() => {
               return (
                 // <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <View className="justify-between items-center">
-                  <Text className="text-2xl font-bold text-white">
+                  <Text className="text-2xl font-bold">
                     {focusedData?.value ?? 40}%
                   </Text>
-                  <Text className="text-xs text-white">
+                  <Text className="text-xs">
                     {focusedData?.name ?? "$40/$100"}
                   </Text>
                 </View>
@@ -100,13 +100,16 @@ export default function Home() {
                 <Text variant="titleLarge">$180</Text>
                 <Text variant="bodyMedium">Spent</Text>
               </View>
-              <View className="w-[50%] items-center">
+              <View className="w-[50%] items-center relative">
                 <Text variant="titleLarge">$780</Text>
                 <Text variant="bodyMedium">Budget</Text>
+                <Text className="absolute -bottom-3.5 text-xs p-0">
+                  (Monthly)
+                </Text>
               </View>
-              <Text className="absolute bottom-px right-1" variant="labelSmall">
+              {/* <Text className="absolute bottom-px right-1" variant="labelSmall">
                 This Month
-              </Text>
+              </Text> */}
             </Card.Content>
           </Card>
         </View>
@@ -123,7 +126,7 @@ export default function Home() {
               <>
                 {index === 0 ? <View className="w-8" /> : <></>}
                 <Card
-                  className="mr-2 mb-2"
+                  className="mr-2"
                   style={{
                     width: Dimensions.get("window").width / 2,
                   }}
@@ -141,6 +144,35 @@ export default function Home() {
             showsHorizontalScrollIndicator={false}
           />
         </View>
+      </View>
+      <View className="w-full px-8 flex-1">
+        <Text className="mb-2" variant="titleMedium">
+          Budget Warnings
+        </Text>
+        <FlatList
+          data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+          renderItem={({ item }) => (
+            <Card className="mb-2 relative">
+              <Card.Content>
+                <View className="flex flex-row justify-between items-center">
+                  <View className="flex flex-col">
+                    <Text variant="bodyMedium">Title{item}</Text>
+                    <Text variant="bodySmall" className="p-0 m-0">
+                      bruh{item}
+                    </Text>
+                  </View>
+                  <Text variant="bodyMedium">${item}00 left</Text>
+                </View>
+                <View
+                  className="absolute bottom-0 left-0 right-0 h-1 border-b-2 w-1/2 mx-2"
+                  style={{
+                    borderColor: paperTheme.colors.primary,
+                  }}
+                />
+              </Card.Content>
+            </Card>
+          )}
+        />
       </View>
     </View>
   );

@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import { StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { Avatar, BottomNavigation, Icon } from "react-native-paper";
 
 export default function LoggedInLayout() {
