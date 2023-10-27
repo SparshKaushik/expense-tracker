@@ -118,32 +118,30 @@ export default function Home() {
         <Text className="px-8 pb-2" variant="titleMedium">
           Recent Spends
         </Text>
-        <View className="relative">
-          <FlatList
-            data={[1, 2, 3]}
-            horizontal
-            renderItem={({ item, index }) => (
-              <>
-                {index === 0 ? <View className="w-8" /> : <></>}
-                <Card
-                  className="mr-2"
-                  style={{
-                    width: Dimensions.get("window").width / 2,
-                  }}
-                >
-                  <Card.Content className="flex flex-row justify-between items-center">
-                    <View className="flex flex-col">
-                      <Text variant="bodyMedium">Title</Text>
-                      <Text variant="bodySmall">Date Time</Text>
-                    </View>
-                    <Text variant="bodyMedium">$100</Text>
-                  </Card.Content>
-                </Card>
-              </>
-            )}
-            showsHorizontalScrollIndicator={false}
-          />
-        </View>
+        <FlatList
+          data={[1, 2, 3]}
+          horizontal
+          renderItem={({ item, index }) => (
+            <>
+              {index === 0 ? <View className="w-8" /> : <></>}
+              <Card
+                className="mr-2"
+                style={{
+                  width: Dimensions.get("window").width / 2,
+                }}
+              >
+                <Card.Content className="flex flex-row justify-between items-center">
+                  <View className="flex flex-col">
+                    <Text variant="bodyMedium">Title</Text>
+                    <Text variant="bodySmall">Date Time</Text>
+                  </View>
+                  <Text variant="bodyMedium">$100</Text>
+                </Card.Content>
+              </Card>
+            </>
+          )}
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
       <View className="w-full px-8 flex-1">
         <Text className="mb-2" variant="titleMedium">
@@ -155,16 +153,16 @@ export default function Home() {
             <Card className="mb-2 relative">
               <Card.Content>
                 <View className="flex flex-row justify-between items-center">
-                  <View className="flex flex-col">
-                    <Text variant="bodyMedium">Title{item}</Text>
+                  <View className="flex-1">
+                    <Text variant="bodyMedium">Title {item}</Text>
                     <Text variant="bodySmall" className="p-0 m-0">
-                      bruh{item}
+                      bruh {item}
                     </Text>
                   </View>
                   <Text variant="bodyMedium">${item}00 left</Text>
                 </View>
                 <View
-                  className="absolute bottom-0 left-0 right-0 h-1 border-b-2 w-1/2 mx-2"
+                  className="absolute bottom-0 left-0 right-0 h-10 border-b-2 w-1/2 rounded-l-2xl"
                   style={{
                     borderColor: paperTheme.colors.primary,
                   }}

@@ -1,20 +1,37 @@
-import { Slot } from "expo-router";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Slot, router, usePathname } from "expo-router";
+import { StyleSheet, View } from "react-native";
 import { Avatar, BottomNavigation, Icon } from "react-native-paper";
 
 export default function LoggedInLayout() {
-  const routes = [
-    { key: "home", title: "Home", icon: "home" },
-    { key: "profile", title: "Profile", icon: "account" },
+  const routes: {
+    key: string;
+    title: string;
+    icon: string;
+    url: string;
+  }[] = [
+    { key: "home", title: "Home", icon: "home", url: "/home" },
+    {
+      key: "reports",
+      title: "Reports",
+      icon: "chart-bar",
+      url: "/home/reports",
+    },
+
+    { key: "profile", title: "Profile", icon: "account", url: "/home/profile" },
   ];
+
+  const path = usePathname();
 
   return (
     <View style={styles.container}>
       <Slot />
       <BottomNavigation.Bar
-        navigationState={{ index: 0, routes }}
+        navigationState={{
+          index: routes.findIndex((r) => r.url === path),
+          routes,
+        }}
         onTabPress={({ route }) => {
-          console.log("onTabPress", route);
+          router.replace(route.url);
         }}
         renderIcon={({ route, focused, color }) => {
           if (route.key === "profile") {
