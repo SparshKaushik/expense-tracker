@@ -1,10 +1,10 @@
-import { View } from "react-native";
 import { Text } from "react-native-paper";
+import AnimatedRoute from "../../../components/AnimatedRoute";
 
 export default function Profile() {
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <AnimatedRoute className="p-6">
+      <Text>Profile</Text>
+    </AnimatedRoute>
   );
 }

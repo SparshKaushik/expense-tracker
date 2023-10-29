@@ -9,6 +9,7 @@ export interface DropDownMenu_t {
     name: string;
     onPress?: () => void;
   }[];
+  extraNode?: JSX.Element;
 }
 
 interface DropDownMenuProps {
@@ -27,6 +28,7 @@ export default function DropDownMenu(props: DropDownMenuProps) {
 
   return (
     <Menu
+      key={props.anchorText}
       visible={visibleMenu}
       onDismiss={() => closeMenu()}
       anchor={
@@ -35,7 +37,7 @@ export default function DropDownMenu(props: DropDownMenuProps) {
             console.log("pressed");
             setVisibleMenu(true);
           }}
-          className="self-start rounded-md p-2"
+          className="self-start rounded-md py-2"
         >
           <View className="flex flex-row items-center self-start">
             <Text className="mr-1" variant="titleSmall">

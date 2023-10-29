@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Dimensions, FlatList, View, useColorScheme } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { Text, MD3DarkTheme, MD3LightTheme, Card } from "react-native-paper";
+import AnimatedRoute from "../../components/AnimatedRoute";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -44,7 +45,7 @@ export default function Home() {
   } | null>(null);
 
   return (
-    <View className="flex flex-col w-full gap-y-4 flex-1">
+    <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1">
       <View className="flex flex-row pb-4 justify-between items-center"></View>
       <View className="px-8 w-full flex flex-row items-center">
         <View className=" w-[50%]">
@@ -73,7 +74,7 @@ export default function Home() {
                 </View>
               );
             }}
-            onPress={(value) => {
+            onPress={(value: any) => {
               if (focusedData?.name === value.name) {
                 setFocusedData(null);
                 return;
@@ -172,6 +173,6 @@ export default function Home() {
           )}
         />
       </View>
-    </View>
+    </AnimatedRoute>
   );
 }

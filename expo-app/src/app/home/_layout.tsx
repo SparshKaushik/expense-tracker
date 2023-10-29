@@ -31,6 +31,7 @@ export default function LoggedInLayout() {
           routes,
         }}
         onTabPress={({ route }) => {
+          if (path === route.url) return;
           router.replace(route.url);
         }}
         renderIcon={({ route, focused, color }) => {
