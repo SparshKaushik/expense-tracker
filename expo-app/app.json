@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-app",
-    "slug": "expo-app",
+    "name": "mera-apna-khata-app",
+    "slug": "mera-apna-khata-app",
     "scheme": "merakhata",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -30,6 +30,15 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "dea67c84-c077-4e97-a9dc-6bb3483bb589"
+      }
+    },
+    "owner": "sparshk9256"
   }
 }
