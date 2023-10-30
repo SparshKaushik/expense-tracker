@@ -2,19 +2,10 @@ import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
 import { useState } from "react";
 import { Dimensions, FlatList, View, useColorScheme } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
-import {
-  Text,
-  MD3DarkTheme,
-  MD3LightTheme,
-  Card,
-  Portal,
-  Modal,
-  Button,
-  AnimatedFAB,
-  TextInput,
-} from "react-native-paper";
+import { Text, MD3DarkTheme, MD3LightTheme, Card } from "react-native-paper";
 import AnimatedRoute from "../../components/AnimatedRoute";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import NewKharchaFAB from "../../components/NewKharchaFAB";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -56,7 +47,6 @@ export default function Home() {
   } | null>(null);
 
   const [isExtendedFAB, setIsExtendedFAB] = useState(false);
-  const [newKharchaModalVisible, setNewKharchaModalVisible] = useState(false);
 
   return (
     <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1 relative">
@@ -192,62 +182,7 @@ export default function Home() {
           )}
         />
       </View>
-      <AnimatedFAB
-        extended={isExtendedFAB}
-        className="absolute right-2 bottom-2 z-10"
-        icon={"plus"}
-        onPress={() => {
-          setNewKharchaModalVisible(true);
-        }}
-        label="Add Kharcha"
-      />
-      <Portal>
-        <Modal
-          style={{
-            position: "relative",
-          }}
-          visible={newKharchaModalVisible}
-          onDismiss={() => {
-            setNewKharchaModalVisible(false);
-          }}
-        >
-          <Card className="w-full absolute bottom-0">
-            <Card.Title title="Add Kharcha" />
-            <Card.Content className="gap-y-2">
-              <TextInput label={"Title"} />
-              <View className="flex flex-row justify-between items-center">
-                <Button className="w-1/3" mode="text">
-                  -100
-                </Button>
-                <TextInput
-                  className="flex-1"
-                  label={"Amount"}
-                  mode="outlined"
-                  value="0"
-                />
-                <Button className="w-1/3" mode="text">
-                  +100
-                </Button>
-              </View>
-              {/* <RNDateTimePicker mode="time" value={new Date()} /> */}
-            </Card.Content>
-            <Card.Actions className="justify-between mt-2">
-              <Button
-                className="flex-1"
-                onPress={() => {
-                  setNewKharchaModalVisible(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button className="flex-1" mode="contained-tonal">
-                Finish Later
-              </Button>
-              <Button className="flex-1">Next</Button>
-            </Card.Actions>
-          </Card>
-        </Modal>
-      </Portal>
+      <NewKharchaFAB isExtendedFAB={isExtendedFAB} />
     </AnimatedRoute>
   );
 }
