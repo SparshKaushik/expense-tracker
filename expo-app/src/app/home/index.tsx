@@ -41,11 +41,11 @@ export default function Home() {
   ];
 
   // default - largest in piedata programmatically
-  const [focusedData, setFocusedData] = useState<{
-    name: string;
-    value: number;
-    color: string;
-  } | null>(null);
+  // const [focusedData, setFocusedData] = useState<{
+  //   name: string;
+  //   value: number;
+  //   color: string;
+  // } | null>(null);
 
   const [isExtendedFAB, setIsExtendedFAB] = useState(false);
 
@@ -70,6 +70,7 @@ export default function Home() {
             width={chartDimensions.width - 10}
             height={chartDimensions.height}
             data={pieData}
+            key={pieData.map((d) => d.name).join("")}
           />
           {/* <PieChart
             data={pieData}

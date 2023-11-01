@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { View } from "react-native";
+import { StyleProp, TextProps, View } from "react-native";
 import { Circle, G, Svg, Text } from "react-native-svg";
 
 export default function BubbleChart(props: {
@@ -24,9 +24,9 @@ export default function BubbleChart(props: {
   //   @ts-ignore
   let fontSizeGenerator = (value) => {
     let size = 0;
-    if (value < 10) {
+    if (value <= 10) {
       size = 8;
-    } else if (value >= 10 && value < 50) {
+    } else if (value > 10 && value < 50) {
       size = 12;
     } else {
       size = 16;
@@ -40,12 +40,12 @@ export default function BubbleChart(props: {
       <G transform={`translate(${leaf.x + 1},${leaf.y + 1})`}>
         <Circle {...circleProps} r={leaf.r} fill={leaf.data.color} />
         <Text
-          {...textProps}
           fill="#FFFFFF"
           fontSize={fontSizeGenerator(leaf.data.value)}
           x="0"
           y={leaf.data.value * 0.1}
           textAnchor="middle"
+          {...textProps}
         >
           {leaf.data.name}
         </Text>

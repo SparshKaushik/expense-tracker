@@ -1,14 +1,24 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Slot, router, usePathname } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, BottomNavigation, Icon } from "react-native-paper";
+import { axiosClient } from "../../lib/axios";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 export default function LoggedInLayout() {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, isLoaded, getToken } = useAuth();
+
+  axiosClient.interceptors.request.use(async (config) => {
+    const token = await getToken();
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  });
 
   useEffect(() => {
-    if (!isSignedIn) {
+    if (!isSignedIn && isLoaded) {
       router.replace("/");
     }
   }, [isSignedIn]);
@@ -34,7 +44,9 @@ export default function LoggedInLayout() {
 
   return (
     <View style={styles.container}>
-      <Slot />
+      <QueryClientProvider client={queryClient}>
+        <Slot />
+      </QueryClientProvider>
       <BottomNavigation.Bar
         navigationState={{
           index: routes.findIndex((r) => r.url === path),

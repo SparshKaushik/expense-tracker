@@ -3,7 +3,7 @@ import { useColorScheme } from "react-native";
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 import { Slot } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ClerkProvider, useUser } from "@clerk/clerk-expo";
+import { ClerkProvider } from "@clerk/clerk-expo";
 import * as SecureStore from "expo-secure-store";
 
 const CLERK_PUBLISHABLE_KEY =
