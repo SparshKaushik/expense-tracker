@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 import {
   AnimatedFAB,
@@ -7,6 +7,7 @@ import {
   Card,
   FAB,
   HelperText,
+  Icon,
   Modal,
   Portal,
   TextInput,
@@ -18,11 +19,11 @@ interface NewKharchaFABProps {
 
 export default function NewKharchaFAB(props: NewKharchaFABProps) {
   const [newKharchaModalVisible, setNewKharchaModalVisible] = useState(false);
-  const [isFABLoading, setIsFABLoading] = useState(true);
-  const { control, handleSubmit, formState } = useForm({
+  const [isFABLoading, setIsFABLoading] = useState(false);
+  const { control, handleSubmit, formState, setValue, reset } = useForm({
     defaultValues: {
       title: "",
-      amount: "",
+      amount: 0,
     },
     criteriaMode: "all",
   });
@@ -50,29 +51,94 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
           }}
         >
           <Card className="w-full absolute bottom-0">
-            <Card.Title title="Add Kharcha" />
+            <Card.Title
+              title="Add Kharcha"
+              right={(props) => (
+                <Button
+                  icon={"restart"}
+                  children
+                  onPress={() => {
+                    reset();
+                  }}
+                />
+              )}
+            />
             <Card.Content className="gap-y-2">
               <View>
-                <TextInput label={"Title"} mode="outlined" error />
-                <HelperText type="error">Title is required</HelperText>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      label={"Title"}
+                      mode="outlined"
+                      error={formState.errors.title ? true : false}
+                      onChange={(e) => {
+                        onChange(e.nativeEvent.text);
+                      }}
+                      onBlur={onBlur}
+                      value={value}
+                    />
+                  )}
+                  name="title"
+                />
+                {formState.errors.title && (
+                  <HelperText type="error">Title is required</HelperText>
+                )}
               </View>
               <View className="flex flex-row justify-between items-center">
-                <Button className="w-1/3" mode="text">
-                  -100
-                </Button>
-                <View>
-                  <TextInput
-                    className="flex-1"
-                    label={"Amount"}
-                    mode="outlined"
-                    value="0"
-                    error
-                  />
-                  <HelperText type="error">Amount is required</HelperText>
-                </View>
-                <Button className="w-1/3" mode="text">
-                  +100
-                </Button>
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <>
+                      <Button
+                        className="w-1/3"
+                        mode="text"
+                        disabled={value <= 100}
+                        onPress={() => {
+                          onChange(value - 100);
+                        }}
+                      >
+                        -100
+                      </Button>
+                      <View>
+                        <TextInput
+                          className="flex-1"
+                          label={"Amount"}
+                          mode="outlined"
+                          error={formState.errors.amount ? true : false}
+                          onChange={(e) => {
+                            onChange(parseInt(e.nativeEvent.text));
+                          }}
+                          onBlur={onBlur}
+                          value={value.toString()}
+                          keyboardType="number-pad"
+                          inputMode="numeric"
+                        />
+                        {formState.errors.amount && (
+                          <HelperText type="error">
+                            Amount is required
+                          </HelperText>
+                        )}
+                      </View>
+                      <Button
+                        className="w-1/3"
+                        mode="text"
+                        onPress={() => {
+                          onChange(value + 100);
+                        }}
+                      >
+                        +100
+                      </Button>
+                    </>
+                  )}
+                  name="amount"
+                />
               </View>
               {/* <RNDateTimePicker mode="time" value={new Date()} /> */}
             </Card.Content>
@@ -85,7 +151,14 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
               >
                 Cancel
               </Button>
-              <Button className="flex-1" mode="contained-tonal">
+              <Button
+                className="flex-1"
+                mode="contained-tonal"
+                onPress={() => {
+                  setIsFABLoading(true);
+                  setNewKharchaModalVisible(false);
+                }}
+              >
                 Finish Later
               </Button>
               <Button className="flex-1">Next</Button>

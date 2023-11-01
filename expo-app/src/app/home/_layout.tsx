@@ -1,8 +1,18 @@
+import { useUser } from "@clerk/clerk-expo";
 import { Slot, router, usePathname } from "expo-router";
+import { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar, BottomNavigation, Icon } from "react-native-paper";
 
 export default function LoggedInLayout() {
+  const { isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (!isSignedIn) {
+      router.replace("/");
+    }
+  }, [isSignedIn]);
+
   const routes: {
     key: string;
     title: string;

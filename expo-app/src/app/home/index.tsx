@@ -1,11 +1,12 @@
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Dimensions, FlatList, View, useColorScheme } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
 import { Text, MD3DarkTheme, MD3LightTheme, Card } from "react-native-paper";
 import AnimatedRoute from "../../components/AnimatedRoute";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import NewKharchaFAB from "../../components/NewKharchaFAB";
+import BubbleChart from "../../components/BubbleChart";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -18,7 +19,7 @@ export default function Home() {
 
   const pieData = [
     {
-      name: "Excellent",
+      name: `Excellent`,
       value: 40,
       color: "#009FFF",
     },
@@ -48,17 +49,29 @@ export default function Home() {
 
   const [isExtendedFAB, setIsExtendedFAB] = useState(false);
 
+  const [chartDimensions, setChartDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
   return (
-    <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1 relative">
-      <View className="flex flex-row pb-4 justify-between items-center"></View>
+    <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1 relative pt-2">
       <View className="px-8 w-full flex flex-row items-center">
-        <View className=" w-[50%]">
-          {/* <BubbleChart
-            width={Dimensions.get("window").width / 2.2}
-            height={Dimensions.get("window").width / 2}
+        <View
+          className="w-[50%]"
+          onLayout={(e) => {
+            setChartDimensions({
+              width: e.nativeEvent.layout.width,
+              height: e.nativeEvent.layout.height,
+            });
+          }}
+        >
+          <BubbleChart
+            width={chartDimensions.width - 10}
+            height={chartDimensions.height}
             data={pieData}
-          /> */}
-          <PieChart
+          />
+          {/* <PieChart
             data={pieData}
             donut
             focusOnPress
@@ -85,7 +98,7 @@ export default function Home() {
               }
               setFocusedData(value);
             }}
-          />
+          /> */}
         </View>
         <View className="flex flex-col gap-2 flex-1">
           <Card>
