@@ -7,11 +7,11 @@ import AnimatedRoute from "../../components/AnimatedRoute";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import NewKharchaFAB from "../../components/NewKharchaFAB";
 import BubbleChart from "../../components/BubbleChart";
+import { useUserData } from "../../models/user";
 
 export default function Home() {
   const colorScheme = useColorScheme();
   const { theme } = useMaterial3Theme();
-
   const paperTheme =
     colorScheme === "dark"
       ? { ...MD3DarkTheme, colors: theme.dark }
@@ -40,19 +40,14 @@ export default function Home() {
     },
   ];
 
-  // default - largest in piedata programmatically
-  // const [focusedData, setFocusedData] = useState<{
-  //   name: string;
-  //   value: number;
-  //   color: string;
-  // } | null>(null);
-
   const [isExtendedFAB, setIsExtendedFAB] = useState(false);
 
   const [chartDimensions, setChartDimensions] = useState({
     width: 0,
     height: 0,
   });
+
+  const userData = useUserData();
 
   return (
     <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1 relative pt-2">
@@ -104,7 +99,7 @@ export default function Home() {
         <View className="flex flex-col gap-2 flex-1">
           <Card>
             <Card.Content className="items-center">
-              <Text variant="titleLarge">$1000</Text>
+              <Text variant="titleLarge">{userData.data?.funds ?? 0}</Text>
               <Text variant="bodyMedium">Total Balance</Text>
             </Card.Content>
           </Card>

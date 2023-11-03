@@ -2,13 +2,14 @@ package auth
 
 import (
 	"log"
+	"os"
 	"strings"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 )
 
-func NewClerkClient(key string) clerk.Client {
-	client, err := clerk.NewClient(key)
+func NewClerkClient() clerk.Client {
+	client, err := clerk.NewClient(os.Getenv("API_KEY"))
 	if err != nil {
 		panic(err)
 	}

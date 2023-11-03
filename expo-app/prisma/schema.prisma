@@ -1,0 +1,67 @@
+generator db {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider     = "mysql"
+    url          = env("DATABASE_URL")
+    relationMode = "prisma"
+}
+
+model Category {
+    id        Int      @id @unique
+    name      String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+    @@index([createdById])
+}
+
+model Tag {
+    id        Int      @id @unique
+    name      String
+    favourite Int
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+    @@index([createdById])
+}
+
+model Expense {
+    id           Int      @id @default(autoincrement())
+    title        String?
+    type         String   @default("Debit")
+    amount       Float
+    final_amount Float
+    split        Json?
+    category     String
+    tags         String
+    dateTime     DateTime @default(now())
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([title])
+    @@index([createdById])
+}
+
+model User {
+    id       String     @id
+    name     String
+    email    String     @unique
+    image    String?
+    funds    Int?
+    Expenses Expense[]
+    Tag      Tag[]
+    Category Category[]
+}

@@ -20,7 +20,7 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 
 func middleware(next func(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *clerk.User)) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-		clerkClient := auth.NewClerkClient(os.Getenv("API_KEY"))
+		clerkClient := auth.NewClerkClient()
 		user, err := auth.ValidateSession(clerkClient, r.Header.Get("Authorization"))
 		if err != nil {
 			log.Println(err)

@@ -42,6 +42,8 @@ export default function LoggedInLayout() {
 
   const path = usePathname();
 
+  const { user } = useUser();
+
   return (
     <View style={styles.container}>
       <QueryClientProvider client={queryClient}>
@@ -57,8 +59,15 @@ export default function LoggedInLayout() {
           router.replace(route.url);
         }}
         renderIcon={({ route, focused, color }) => {
-          if (route.key === "profile") {
-            return <Avatar.Text size={24} label="SK" />;
+          if (route.key === "profile" && user?.firstName && user?.lastName) {
+            return (
+              <Avatar.Text
+                size={24}
+                label={(
+                  user?.firstName?.slice(0, 1) + user?.lastName?.slice(0, 1)
+                ).toUpperCase()}
+              />
+            );
           }
           return <Icon source={route.icon} size={24} color={color} />;
         }}
