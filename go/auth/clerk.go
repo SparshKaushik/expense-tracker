@@ -8,7 +8,6 @@ import (
 )
 
 func NewClerkClient(key string) clerk.Client {
-	log.Println("API_KEY", key)
 	client, err := clerk.NewClient(key)
 	if err != nil {
 		panic(err)

@@ -37,7 +37,10 @@ export default function BubbleChart(props: {
   let leaves = [];
   for (let leaf of root.leaves() as any) {
     leaves.push(
-      <G transform={`translate(${leaf.x + 1},${leaf.y + 1})`}>
+      <G
+        transform={`translate(${leaf.x + 1},${leaf.y + 1})`}
+        key={leaf.data.name}
+      >
         <Circle {...circleProps} r={leaf.r} fill={leaf.data.color} />
         <Text
           fill="#FFFFFF"
