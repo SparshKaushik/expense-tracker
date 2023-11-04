@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"log"
 	"os"
 	"strings"
 
@@ -26,6 +25,5 @@ func ValidateSession(clerkClient clerk.Client, sessionToken string) (*clerk.User
 	if err != nil {
 		return nil, err
 	}
-	log.Println("User", user)
 	return user, err
 }

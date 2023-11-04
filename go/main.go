@@ -5,10 +5,10 @@ package main
 import (
 	"fmt"
 	"khata-api/auth"
-	user_model "khata-api/models"
+	expense_model "khata-api/models/expense"
+	user_model "khata-api/models/user"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
 	"github.com/julienschmidt/httprouter"
@@ -33,8 +33,6 @@ func middleware(next func(w http.ResponseWriter, r *http.Request, ps httprouter.
 }
 
 func main() {
-	log.Println(os.Getenv("API_KEY"))
-
 	router := httprouter.New()
 
 	router.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -53,6 +51,8 @@ func main() {
 	router.GET("/", Index)
 
 	router.GET("/user", middleware(user_model.GetUser))
+	router.GET("/expense/:id", middleware(expense_model.GetExpense))
+	router.POST("/expense", middleware(expense_model.CreateExpense))
 
 	log.Println("Listening on port 3000")
 	log.Println("URL: http://localhost:3000")

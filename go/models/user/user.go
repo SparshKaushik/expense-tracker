@@ -2,11 +2,9 @@ package user_model
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"khata-api/db"
-	utils_httpResponse "khata-api/utils"
-	"log"
+	utils_httpResponse "khata-api/utils/http"
 	"net/http"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
@@ -14,15 +12,8 @@ import (
 )
 
 func GetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *clerk.User) {
-	client := db.NewClient()
-	if err := client.Prisma.Connect(); err != nil {
-		utils_httpResponse.AbortInternalServerError(w)
-	}
-	defer func() {
-		if err := client.Prisma.Disconnect(); err != nil {
-			log.Fatal(err)
-		}
-	}()
+	client, deferFunc := db.GetNewClient(w)
+	defer deferFunc()
 	ctx := context.Background()
 	userData, err := client.User.FindUnique(
 		db.User.ID.Equals(user.ID),
@@ -42,10 +33,5 @@ func GetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user 
 	if err != nil {
 		utils_httpResponse.AbortInternalServerError(w)
 	}
-	jsonUserData, err := json.Marshal(userData)
-	if err != nil {
-		utils_httpResponse.AbortInternalServerError(w)
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(jsonUserData))
+	utils_httpResponse.WriteJsonAfterMarshallOKResponse(w, userData)
 }
