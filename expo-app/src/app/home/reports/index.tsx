@@ -1,8 +1,16 @@
 import { FlatList, View } from "react-native";
-import { Card, Chip, Divider, Text } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  Card,
+  Chip,
+  Divider,
+  Text,
+} from "react-native-paper";
 import DropDownMenu, { DropDownMenu_t } from "../../../components/DropDownMenu";
 import AnimatedRoute from "../../../components/AnimatedRoute";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useExpensesData } from "../../../models/expense";
 
 export default function Reports() {
   const menus: DropDownMenu_t[] = [
@@ -42,8 +50,16 @@ export default function Reports() {
     },
   ]);
 
+  const expenseData = useExpensesData();
+
   return (
     <AnimatedRoute className="flex flex-col flex-1 p-6 gap-y-2">
+      <Button
+        className="absolute top-2 right-2"
+        icon={"reload"}
+        onPress={() => expenseData.refetch()}
+        children={""}
+      />
       <View>
         <FlatList
           data={menus}
@@ -96,19 +112,40 @@ export default function Reports() {
       </View>
       <Divider />
       <View className="flex-1">
-        <Card className="my-1">
-          <Card.Content>
-            <View className="flex flex-row justify-between items-center">
-              <View className="flex-1">
-                <Text variant="bodyMedium">Title</Text>
-                <Text variant="bodySmall" className="p-0 m-0">
-                  bruh
+        {expenseData.isLoading || expenseData.isRefetching ? (
+          <ActivityIndicator />
+        ) : (
+          <>
+            <FlatList
+              data={expenseData.data}
+              renderItem={({ item }) => (
+                <Card className="my-1">
+                  <Card.Content>
+                    <View className="flex flex-row justify-between items-center">
+                      <View className="flex-1">
+                        <Text variant="bodyMedium">
+                          {item.title ?? "Not Set Yet"}
+                        </Text>
+                        <Text variant="bodySmall" className="p-0 m-0">
+                          {item.category}
+                        </Text>
+                      </View>
+                      <Text variant="bodyMedium">
+                        {item.type === "Debit" ? "-" : "+"}${item.amount}
+                      </Text>
+                    </View>
+                  </Card.Content>
+                </Card>
+              )}
+              keyExtractor={(item) => item.id.toString()}
+              ListEmptyComponent={() => (
+                <Text className="text-center" variant="bodyMedium">
+                  No Expenses Found
                 </Text>
-              </View>
-              <Text variant="bodyMedium">$00</Text>
-            </View>
-          </Card.Content>
-        </Card>
+              )}
+            />
+          </>
+        )}
       </View>
     </AnimatedRoute>
   );

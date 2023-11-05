@@ -15,6 +15,11 @@ func AbortBadRequest(w http.ResponseWriter) {
 	w.Write([]byte("400 - Bad Request"))
 }
 
+func AbortBadRequestWithCustomError(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusBadRequest)
+	w.Write([]byte(err.Error()))
+}
+
 func AbortUnauthorized(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusUnauthorized)
 	w.Write([]byte("401 - Unauthorized"))

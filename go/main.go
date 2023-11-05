@@ -51,6 +51,7 @@ func main() {
 	router.GET("/", Index)
 
 	router.GET("/user", middleware(user_model.GetUser))
+	router.GET("/expense", middleware(expense_model.GetExpenses))
 	router.GET("/expense/:id", middleware(expense_model.GetExpense))
 	router.POST("/expense", middleware(expense_model.CreateExpense))
 
