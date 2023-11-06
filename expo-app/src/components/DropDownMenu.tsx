@@ -1,25 +1,29 @@
 import { useState } from "react";
-import { View } from "react-native";
-import { Divider, Icon, Menu, Text, TouchableRipple } from "react-native-paper";
+import { View, ViewProps } from "react-native";
+import {
+  Checkbox,
+  Icon,
+  Menu,
+  Text,
+  TouchableRipple,
+} from "react-native-paper";
 
 export interface DropDownMenu_t {
   name: string;
   anchorIcon: string;
   items: {
     name: string;
+    checked?: boolean;
     onPress?: () => void;
   }[];
   extraNode?: JSX.Element;
 }
 
-interface DropDownMenuProps {
-  anchorText: string;
-  anchorIcon: string;
-  items: {
-    name: string;
-    onPress?: () => void;
-  }[];
+interface DropDownMenuProps extends DropDownMenu_t {
+  anchor?: JSX.Element;
+  DropdownMenuProps?: ViewProps;
   onSelectItem?: (item: string) => void;
+  multiSelect?: boolean;
 }
 
 export default function DropDownMenu(props: DropDownMenuProps) {
@@ -28,38 +32,47 @@ export default function DropDownMenu(props: DropDownMenuProps) {
 
   return (
     <Menu
-      key={props.anchorText}
+      key={props.name}
       visible={visibleMenu}
       onDismiss={() => closeMenu()}
       anchor={
-        <TouchableRipple
-          onPress={() => {
-            console.log("pressed");
-            setVisibleMenu(true);
-          }}
-          className="self-start rounded-md py-2"
-        >
-          <View className="flex flex-row items-center self-start">
-            <Text className="mr-1" variant="titleSmall">
-              {props.anchorText}
-            </Text>
-            <Icon source={props.anchorIcon ?? "chevron-down"} size={20} />
-          </View>
-        </TouchableRipple>
+        props.anchor ?? (
+          <TouchableRipple
+            onPress={() => {
+              setVisibleMenu(true);
+            }}
+            className="self-start rounded-md py-2"
+          >
+            <View className="flex flex-row items-center self-start">
+              <Text className="mr-1" variant="titleSmall">
+                {props.name}
+              </Text>
+              <Icon source={props.anchorIcon ?? "chevron-down"} size={20} />
+            </View>
+          </TouchableRipple>
+        )
       }
+      anchorPosition="bottom"
     >
       {props.items.map((item, index) => (
-        <>
-          <Menu.Item
-            key={index}
-            onPress={() => {
-              props.onSelectItem?.(item.name);
-              item.onPress?.();
-              closeMenu();
-            }}
-            title={item.name}
-          />
-        </>
+        <TouchableRipple
+          onPress={() => {
+            props.onSelectItem?.(item.name);
+            item.onPress?.();
+            !props.multiSelect && closeMenu();
+          }}
+          key={item.name}
+        >
+          <View
+            className="flex flex-row items-center justify-between pr-4"
+            {...props.DropdownMenuProps}
+          >
+            <Menu.Item key={index} title={item.name} />
+            {props.multiSelect && (
+              <Checkbox status={item.checked ? "checked" : "unchecked"} />
+            )}
+          </View>
+        </TouchableRipple>
       ))}
     </Menu>
   );

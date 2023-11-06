@@ -1,4 +1,4 @@
-package expense_model
+package models
 
 import (
 	"context"

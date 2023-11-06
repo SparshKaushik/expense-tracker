@@ -5,8 +5,7 @@ package main
 import (
 	"fmt"
 	"khata-api/auth"
-	expense_model "khata-api/models/expense"
-	user_model "khata-api/models/user"
+	"khata-api/models"
 	"log"
 	"net/http"
 
@@ -50,10 +49,14 @@ func main() {
 
 	router.GET("/", Index)
 
-	router.GET("/user", middleware(user_model.GetUser))
-	router.GET("/expense", middleware(expense_model.GetExpenses))
-	router.GET("/expense/:id", middleware(expense_model.GetExpense))
-	router.POST("/expense", middleware(expense_model.CreateExpense))
+	router.GET("/user", middleware(models.GetUser))
+
+	router.GET("/expense", middleware(models.GetExpenses))
+	router.GET("/expense/:id", middleware(models.GetExpense))
+	router.POST("/expense", middleware(models.CreateExpense))
+
+	router.GET("/tag", middleware(models.GetTags))
+	router.GET("/tag/:id", middleware(models.GetTag))
 
 	log.Println("Listening on port 3000")
 	log.Println("URL: http://localhost:3000")

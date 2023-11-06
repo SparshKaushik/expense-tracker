@@ -11,6 +11,7 @@ import DropDownMenu, { DropDownMenu_t } from "../../../components/DropDownMenu";
 import AnimatedRoute from "../../../components/AnimatedRoute";
 import { useEffect, useState } from "react";
 import { useExpensesData } from "../../../models/expense";
+import { useTagsData } from "../../../models/tags";
 
 export default function Reports() {
   const menus: DropDownMenu_t[] = [
@@ -22,35 +23,10 @@ export default function Reports() {
     },
   ];
 
-  const [tagChips, setTagChips] = useState<
-    {
-      name: string;
-      selected: boolean;
-    }[]
-  >([
-    {
-      name: "Tag 1",
-      selected: true,
-    },
-    {
-      name: "Tag 2",
-      selected: true,
-    },
-    {
-      name: "Tag 3",
-      selected: true,
-    },
-    {
-      name: "Tag 4",
-      selected: true,
-    },
-    {
-      name: "Tag 5",
-      selected: true,
-    },
-  ]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const expenseData = useExpensesData();
+  const tagsData = useTagsData();
 
   return (
     <AnimatedRoute className="flex flex-col flex-1 p-6 gap-y-2">
@@ -58,7 +34,7 @@ export default function Reports() {
         className="absolute top-2 right-2"
         icon={"reload"}
         onPress={() => expenseData.refetch()}
-        children={""}
+        children={<></>}
       />
       <View>
         <FlatList
@@ -68,12 +44,7 @@ export default function Reports() {
               className="flex flex-row items-center self-start"
               key={item.name}
             >
-              <DropDownMenu
-                key={item.name}
-                anchorText={item.name}
-                anchorIcon={item.anchorIcon}
-                items={item.items}
-              />
+              <DropDownMenu key={item.name} {...item} multiSelect />
               {item.extraNode}
             </View>
           )}
@@ -82,38 +53,44 @@ export default function Reports() {
         />
       </View>
       <Divider />
-      <View className="flex flex-row flex-wrap -mx-6">
-        <FlatList
-          data={tagChips}
-          renderItem={({ item, index }) => (
-            <>
-              {index === 0 && <View className="px-3" />}
-              <Chip
-                className="m-1 self-start"
-                mode={item.selected ? "flat" : "outlined"}
-                selected={item.selected}
-                onPress={() => {
-                  setTagChips(
-                    tagChips.map((tag) =>
-                      tag.name === item.name
-                        ? { ...tag, selected: !tag.selected }
-                        : tag
-                    )
-                  );
-                }}
-              >
-                {item.name}
-              </Chip>
-            </>
-          )}
-          keyExtractor={(item) => item.name}
-          horizontal
-        />
-      </View>
-      <Divider />
+      {!tagsData.isLoading && tagsData.data && tagsData.data.length > 0 && (
+        <>
+          <View className="flex flex-row flex-wrap -mx-6">
+            <FlatList
+              data={tagsData.data}
+              renderItem={({ item, index }) => (
+                <>
+                  {index === 0 && <View className="px-3" />}
+                  <Chip
+                    className="m-1 self-start"
+                    mode={
+                      selectedTags.includes(item.name) ? "flat" : "outlined"
+                    }
+                    selected={selectedTags.includes(item.name)}
+                    onPress={() => {
+                      if (selectedTags.includes(item.name)) {
+                        setSelectedTags((prev) =>
+                          prev.filter((tag) => tag !== item.name)
+                        );
+                      } else {
+                        setSelectedTags((prev) => [...prev, item.name]);
+                      }
+                    }}
+                  >
+                    {item.name}
+                  </Chip>
+                </>
+              )}
+              keyExtractor={(item) => item.name}
+              horizontal
+            />
+          </View>
+          <Divider />
+        </>
+      )}
       <View className="flex-1">
         {expenseData.isLoading || expenseData.isRefetching ? (
-          <ActivityIndicator />
+          <ActivityIndicator className="my-4" />
         ) : (
           <>
             <FlatList
