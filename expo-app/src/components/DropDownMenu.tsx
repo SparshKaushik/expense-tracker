@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, ViewProps } from "react-native";
 import {
   Checkbox,
+  Divider,
   Icon,
   Menu,
   Text,
@@ -10,7 +11,7 @@ import {
 
 export interface DropDownMenu_t {
   name: string;
-  anchorIcon: string;
+  anchorIcon?: string;
   items: {
     name: string;
     checked?: boolean;
@@ -20,15 +21,20 @@ export interface DropDownMenu_t {
 }
 
 interface DropDownMenuProps extends DropDownMenu_t {
-  anchor?: JSX.Element;
+  anchor?: (
+    setVisibleMenu: (visible: boolean) => void,
+    setMenuHeight: (height: number) => void
+  ) => JSX.Element;
   DropdownMenuProps?: ViewProps;
   onSelectItem?: (item: string) => void;
   multiSelect?: boolean;
+  aboveAnchor?: boolean;
 }
 
 export default function DropDownMenu(props: DropDownMenuProps) {
   const [visibleMenu, setVisibleMenu] = useState<boolean>(false);
   const closeMenu = () => setVisibleMenu(false);
+  const [menuHeight, setMenuHeight] = useState<number>(0);
 
   return (
     <Menu
@@ -36,7 +42,7 @@ export default function DropDownMenu(props: DropDownMenuProps) {
       visible={visibleMenu}
       onDismiss={() => closeMenu()}
       anchor={
-        props.anchor ?? (
+        (props.anchor && props.anchor(setVisibleMenu, setMenuHeight)) ?? (
           <TouchableRipple
             onPress={() => {
               setVisibleMenu(true);
@@ -52,28 +58,46 @@ export default function DropDownMenu(props: DropDownMenuProps) {
           </TouchableRipple>
         )
       }
-      anchorPosition="bottom"
+      anchorPosition={props.aboveAnchor ? "top" : "bottom"}
+      contentStyle={{
+        transform: [
+          {
+            translateY: props.aboveAnchor ? -menuHeight : 0,
+          },
+        ],
+      }}
     >
       {props.items.map((item, index) => (
-        <TouchableRipple
-          onPress={() => {
-            props.onSelectItem?.(item.name);
-            item.onPress?.();
-            !props.multiSelect && closeMenu();
-          }}
-          key={item.name}
-        >
-          <View
-            className="flex flex-row items-center justify-between pr-4"
-            {...props.DropdownMenuProps}
+        <>
+          <TouchableRipple
+            onPress={() => {
+              props.onSelectItem?.(item.name);
+              item.onPress?.();
+              !props.multiSelect && closeMenu();
+            }}
+            key={item.name}
           >
-            <Menu.Item key={index} title={item.name} />
-            {props.multiSelect && (
-              <Checkbox status={item.checked ? "checked" : "unchecked"} />
-            )}
-          </View>
-        </TouchableRipple>
+            <View
+              className="flex flex-row items-center justify-between pr-4"
+              {...props.DropdownMenuProps}
+            >
+              <Menu.Item key={index} title={item.name} />
+              {props.multiSelect && (
+                <Checkbox status={item.checked ? "checked" : "unchecked"} />
+              )}
+            </View>
+          </TouchableRipple>
+          {index !== props.items.length - 1 && <Divider />}
+        </>
       ))}
+      {props.items.length === 0 && (
+        <View
+          className="flex flex-row items-center justify-between pr-4"
+          {...props.DropdownMenuProps}
+        >
+          <Menu.Item key={0} title={"No items"} />
+        </View>
+      )}
     </Menu>
   );
 }

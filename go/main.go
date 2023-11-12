@@ -54,6 +54,7 @@ func main() {
 	router.GET("/expense", middleware(models.GetExpenses))
 	router.GET("/expense/:id", middleware(models.GetExpense))
 	router.POST("/expense", middleware(models.CreateExpense))
+	router.POST("/expense/lazy", middleware(models.CreateLazyExpense))
 
 	router.GET("/tag", middleware(models.GetTags))
 	router.GET("/tag/:id", middleware(models.GetTag))
