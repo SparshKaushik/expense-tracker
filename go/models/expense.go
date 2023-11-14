@@ -127,7 +127,7 @@ func CreateLazyExpense(w http.ResponseWriter, r *http.Request, ps httprouter.Par
 		),
 
 		db.Expense.Type.Set(t.Type),
-		db.Expense.DateTime.Set(time.Unix(t.DateTime, 0)),
+		db.Expense.DateTime.Set(time.Unix(t.DateTime/1000, 0)),
 	).Exec(ctx)
 	if err != nil {
 		log.Println(err)

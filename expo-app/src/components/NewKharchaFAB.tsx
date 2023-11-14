@@ -6,14 +6,18 @@ import {
   Card,
   FAB,
   HelperText,
+  Icon,
+  IconButton,
   Modal,
   Portal,
+  SegmentedButtons,
   TextInput,
 } from "react-native-paper";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import DropDownMenu from "./DropDownMenu";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { createLazyExpense_t, useCreateLazyExpense } from "../models/expense";
 
 interface NewKharchaFABProps {
   isExtendedFAB: boolean;
@@ -25,6 +29,7 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
   const { control, handleSubmit, formState, setValue, reset } = useForm({
     defaultValues: {
       title: "",
+      type: "Debit",
       amount: 0,
       category: "",
       dateTime: new Date(),
@@ -32,13 +37,36 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
     criteriaMode: "all",
     resolver: yupResolver(
       yup.object().shape({
-        title: yup.string().required(),
+        title: yup.string().test({
+          name: "title",
+          message: "Title is required",
+          test: (value) => {
+            if (lazyKharcha) return true;
+            return value !== "";
+          },
+        }),
+        type: yup.string().required(),
         amount: yup.number().required(),
         category: yup.string().required(),
         dateTime: yup.date().required(),
+        tags: yup
+          .array()
+          .of(yup.string())
+          .test({
+            name: "tags",
+            message: "Tags is required",
+            test: (value) => {
+              if (lazyKharcha) return true;
+              return (value?.length ?? -1) > 0;
+            },
+          }),
       })
     ),
   });
+
+  const createLazyExpense = useCreateLazyExpense();
+
+  const [lazyKharcha, setLazyKharcha] = useState(true);
   const [searchCategory, setSearchCategory] = useState<string>("");
   const categories = [{ name: "Food" }, { name: "Travel" }];
 
@@ -71,9 +99,9 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
             <Card.Title
               title="Add Kharcha"
               right={(props) => (
-                <Button
+                <IconButton
+                  mode="contained"
                   icon={"restart"}
-                  children
                   onPress={() => {
                     reset();
                   }}
@@ -81,7 +109,31 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
               )}
             />
             <Card.Content className="gap-y-2">
-              <View>
+              <View className="py-2">
+                <Controller
+                  control={control}
+                  rules={{
+                    required: true,
+                  }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <SegmentedButtons
+                      buttons={[
+                        { value: "Debit", label: "Debit", icon: "cash-minus" },
+                        { value: "Credit", label: "Credit", icon: "cash-plus" },
+                      ]}
+                      onValueChange={(value) => {
+                        onChange(value);
+                      }}
+                      value={value}
+                    />
+                  )}
+                  name="type"
+                />
+                {formState.errors.type && (
+                  <HelperText type="error">Type is required</HelperText>
+                )}
+              </View>
+              {/* <View>
                 <Controller
                   control={control}
                   rules={{
@@ -104,7 +156,7 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                 {formState.errors.title && (
                   <HelperText type="error">Title is required</HelperText>
                 )}
-              </View>
+              </View> */}
               <View className="flex flex-row justify-between items-center">
                 <Controller
                   control={control}
@@ -282,7 +334,6 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                   name="dateTime"
                 />
               </View>
-              {/* <RNDateTimePicker mode="time" value={new Date()} /> */}
             </Card.Content>
             <Card.Actions className="justify-between mt-4">
               <Button
@@ -297,8 +348,43 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                 className="flex-1"
                 mode="contained-tonal"
                 onPress={() => {
-                  setIsFABLoading(true);
-                  setNewKharchaModalVisible(false);
+                  handleSubmit(
+                    (data) => {
+                      ToastAndroid.show(
+                        "Adding kharcha, please wait...",
+                        ToastAndroid.SHORT
+                      );
+                      setIsFABLoading(true);
+                      try {
+                        delete data.tags;
+                        delete data.title;
+                        createLazyExpense
+                          .mutateAsync({
+                            ...data,
+                            final_amount: data.amount,
+                            dateTime: data.dateTime.getTime(),
+                          } as createLazyExpense_t)
+                          .then(() => {
+                            ToastAndroid.show(
+                              "Kharcha added successfully",
+                              ToastAndroid.SHORT
+                            );
+                            reset();
+                            setNewKharchaModalVisible(false);
+                          });
+                      } catch (error) {
+                        ToastAndroid.show(
+                          JSON.stringify(error),
+                          ToastAndroid.SHORT
+                        );
+                      }
+                      setIsFABLoading(false);
+                    },
+                    (e) => {
+                      ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT);
+                    }
+                  )();
+                  // setNewKharchaModalVisible(false);
                 }}
               >
                 Finish Later

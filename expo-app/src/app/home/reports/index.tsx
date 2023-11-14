@@ -5,6 +5,7 @@ import {
   Card,
   Chip,
   Divider,
+  IconButton,
   Text,
 } from "react-native-paper";
 import DropDownMenu, { DropDownMenu_t } from "../../../components/DropDownMenu";
@@ -30,12 +31,6 @@ export default function Reports() {
 
   return (
     <AnimatedRoute className="flex flex-col flex-1 p-6 gap-y-2">
-      <Button
-        className="absolute top-2 right-2"
-        icon={"reload"}
-        onPress={() => expenseData.refetch()}
-        children={<></>}
-      />
       <View>
         <FlatList
           data={menus}

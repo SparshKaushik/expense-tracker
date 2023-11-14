@@ -58,11 +58,11 @@ export default function DropDownMenu(props: DropDownMenuProps) {
           </TouchableRipple>
         )
       }
-      anchorPosition={props.aboveAnchor ? "top" : "bottom"}
+      anchorPosition="bottom"
       contentStyle={{
         transform: [
           {
-            translateY: props.aboveAnchor ? -menuHeight : 0,
+            translateY: props.aboveAnchor ? -menuHeight * 2 : 0,
           },
         ],
       }}
