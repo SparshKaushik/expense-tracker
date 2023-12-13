@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"khata-api/db"
-	utils_httpResponse "khata-api/utils/http"
+	utils_http "khata-api/utils/http"
 	"net/http"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
@@ -31,7 +31,7 @@ func GetUser(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user 
 		).Exec(ctx)
 	}
 	if err != nil {
-		utils_httpResponse.AbortInternalServerError(w)
+		utils_http.AbortInternalServerError(w)
 	}
-	utils_httpResponse.WriteJsonAfterMarshallOKResponse(w, userData)
+	utils_http.WriteJsonAfterMarshallOKResponse(w, userData)
 }

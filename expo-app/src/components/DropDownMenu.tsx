@@ -14,10 +14,14 @@ export interface DropDownMenu_t {
   anchorIcon?: string;
   items: {
     name: string;
-    checked?: boolean;
+    value?: string;
     onPress?: () => void;
   }[];
   extraNode?: JSX.Element;
+  onSelectItem?: (item: string) => void;
+  multiSelect?: boolean;
+  selectedItems?: string[];
+  onClear?: () => void;
 }
 
 interface DropDownMenuProps extends DropDownMenu_t {
@@ -26,8 +30,6 @@ interface DropDownMenuProps extends DropDownMenu_t {
     setMenuHeight: (height: number) => void
   ) => JSX.Element;
   DropdownMenuProps?: ViewProps;
-  onSelectItem?: (item: string) => void;
-  multiSelect?: boolean;
   aboveAnchor?: boolean;
 }
 
@@ -71,7 +73,7 @@ export default function DropDownMenu(props: DropDownMenuProps) {
         <>
           <TouchableRipple
             onPress={() => {
-              props.onSelectItem?.(item.name);
+              props.onSelectItem?.(item.value ?? item.name);
               item.onPress?.();
               !props.multiSelect && closeMenu();
             }}
@@ -83,7 +85,13 @@ export default function DropDownMenu(props: DropDownMenuProps) {
             >
               <Menu.Item key={index} title={item.name} />
               {props.multiSelect && (
-                <Checkbox status={item.checked ? "checked" : "unchecked"} />
+                <Checkbox
+                  status={
+                    props.selectedItems?.includes(item.value ?? item.name)
+                      ? "checked"
+                      : "unchecked"
+                  }
+                />
               )}
             </View>
           </TouchableRipple>

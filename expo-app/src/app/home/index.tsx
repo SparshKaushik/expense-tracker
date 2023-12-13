@@ -1,13 +1,12 @@
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Dimensions, FlatList, View, useColorScheme } from "react-native";
-import { PieChart } from "react-native-gifted-charts";
 import { Text, MD3DarkTheme, MD3LightTheme, Card } from "react-native-paper";
 import AnimatedRoute from "../../components/AnimatedRoute";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import NewKharchaFAB from "../../components/NewKharchaFAB";
 import BubbleChart from "../../components/BubbleChart";
 import { useUserData } from "../../models/user";
+import { useExpensesData } from "../../models/expense";
 
 export default function Home() {
   const colorScheme = useColorScheme();
@@ -48,6 +47,11 @@ export default function Home() {
   });
 
   const userData = useUserData();
+  const recentExpenseData = useExpensesData({
+    limit: 5,
+    offset: 0,
+    sortBy: "dateTime",
+  });
 
   return (
     <AnimatedRoute className="flex flex-col w-full gap-y-4 flex-1 relative pt-2">
@@ -67,34 +71,6 @@ export default function Home() {
             data={pieData}
             key={pieData.map((d) => d.name).join("")}
           />
-          {/* <PieChart
-            data={pieData}
-            donut
-            focusOnPress
-            radius={Dimensions.get("window").width / 4 - 25}
-            innerRadius={Dimensions.get("window").width / 4 - 50}
-            innerCircleColor={paperTheme.colors.background}
-            centerLabelComponent={() => {
-              return (
-                // <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <View className="justify-between items-center">
-                  <Text className="text-2xl font-bold">
-                    {focusedData?.value ?? 40}%
-                  </Text>
-                  <Text className="text-xs">
-                    {focusedData?.name ?? "$40/$100"}
-                  </Text>
-                </View>
-              );
-            }}
-            onPress={(value: any) => {
-              if (focusedData?.name === value.name) {
-                setFocusedData(null);
-                return;
-              }
-              setFocusedData(value);
-            }}
-          /> */}
         </View>
         <View className="flex flex-col gap-2 flex-1">
           <Card>
@@ -130,10 +106,10 @@ export default function Home() {
       </View>
       <View className="w-full">
         <Text className="px-8 pb-2" variant="titleMedium">
-          Recent Spends
+          Recent Transactions
         </Text>
         <FlatList
-          data={[1, 2, 3]}
+          data={recentExpenseData.data}
           horizontal
           renderItem={({ item, index }) => (
             <>
@@ -146,10 +122,16 @@ export default function Home() {
               >
                 <Card.Content className="flex flex-row justify-between items-center">
                   <View className="flex flex-col">
-                    <Text variant="bodyMedium">Title</Text>
-                    <Text variant="bodySmall">Date Time</Text>
+                    <Text variant="bodyMedium">
+                      {item.title ?? item.category}
+                    </Text>
+                    <Text variant="bodySmall">
+                      {new Date(item.dateTime).toLocaleString()}
+                    </Text>
                   </View>
-                  <Text variant="bodyMedium">$100</Text>
+                  <Text variant="bodyMedium">
+                    {item.type === "Debit" ? "-" : "+"}${item.amount}
+                  </Text>
                 </Card.Content>
               </Card>
             </>
@@ -191,7 +173,7 @@ export default function Home() {
           )}
         />
       </View>
-      <NewKharchaFAB isExtendedFAB={isExtendedFAB} />
+      <NewKharchaFAB />
     </AnimatedRoute>
   );
 }

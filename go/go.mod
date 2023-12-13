@@ -7,7 +7,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/julienschmidt/httprouter v1.3.0
 	github.com/shopspring/decimal v1.3.1
-	github.com/steebchen/prisma-client-go v0.27.0
+	github.com/steebchen/prisma-client-go v0.31.0
 	github.com/takuoki/gocase v1.0.0
 	golang.org/x/text v0.13.0
 )

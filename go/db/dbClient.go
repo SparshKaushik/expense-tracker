@@ -1,7 +1,7 @@
 package db
 
 import (
-	utils_httpResponse "khata-api/utils/http"
+	utils_http "khata-api/utils/http"
 	"log"
 	"net/http"
 )
@@ -9,7 +9,7 @@ import (
 func GetNewClient(w http.ResponseWriter) (*PrismaClient, func()) {
 	client := NewClient()
 	if err := client.Prisma.Connect(); err != nil {
-		utils_httpResponse.AbortInternalServerError(w)
+		utils_http.AbortInternalServerError(w)
 	}
 	deferFunc := func() {
 		if err := client.Prisma.Disconnect(); err != nil {

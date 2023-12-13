@@ -6,7 +6,6 @@ import {
   Card,
   FAB,
   HelperText,
-  Icon,
   IconButton,
   Modal,
   Portal,
@@ -19,11 +18,7 @@ import DropDownMenu from "./DropDownMenu";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { createLazyExpense_t, useCreateLazyExpense } from "../models/expense";
 
-interface NewKharchaFABProps {
-  isExtendedFAB: boolean;
-}
-
-export default function NewKharchaFAB(props: NewKharchaFABProps) {
+export default function NewKharchaFAB() {
   const [newKharchaModalVisible, setNewKharchaModalVisible] = useState(false);
   const [isFABLoading, setIsFABLoading] = useState(false);
   const { control, handleSubmit, formState, setValue, reset } = useForm({
@@ -80,9 +75,9 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
         className="absolute right-2 bottom-2 z-10"
         icon={"plus"}
         onPress={() => {
-          !props.isExtendedFAB ? setNewKharchaModalVisible(true) : null;
+          setNewKharchaModalVisible(true);
         }}
-        label={props.isExtendedFAB ? "Add Kharcha" : ""}
+        // label={props.isExtendedFAB ? "Add Kharcha" : ""}
         loading={isFABLoading}
       />
       <Portal>
@@ -313,7 +308,8 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                           mode="date"
                           value={new Date(value)}
                           onChange={(e) => {
-                            onChange(e.nativeEvent.timestamp);
+                            e.nativeEvent.timestamp &&
+                              onChange(new Date(e.nativeEvent.timestamp));
                             setTimePickerVisible(true);
                             setDatePickerVisible(false);
                           }}
@@ -324,7 +320,8 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                           mode="time"
                           value={new Date(value)}
                           onChange={(e) => {
-                            onChange(e.nativeEvent.timestamp);
+                            e.nativeEvent.timestamp &&
+                              onChange(new Date(e.nativeEvent.timestamp));
                             setTimePickerVisible(false);
                           }}
                         />
@@ -355,6 +352,7 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                         ToastAndroid.SHORT
                       );
                       setIsFABLoading(true);
+                      setNewKharchaModalVisible(false);
                       try {
                         delete data.tags;
                         delete data.title;
@@ -370,15 +368,15 @@ export default function NewKharchaFAB(props: NewKharchaFABProps) {
                               ToastAndroid.SHORT
                             );
                             reset();
-                            setNewKharchaModalVisible(false);
+                            setIsFABLoading(false);
                           });
                       } catch (error) {
                         ToastAndroid.show(
                           JSON.stringify(error),
                           ToastAndroid.SHORT
                         );
+                        setIsFABLoading(false);
                       }
-                      setIsFABLoading(false);
                     },
                     (e) => {
                       ToastAndroid.show(JSON.stringify(e), ToastAndroid.SHORT);

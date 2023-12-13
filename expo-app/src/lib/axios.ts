@@ -8,3 +8,10 @@ export const axiosClient = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+export const cleanObject = (obj: any) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === undefined) delete obj[key];
+  });
+  return obj;
+};

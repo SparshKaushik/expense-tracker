@@ -1,0 +1,10 @@
+{
+  "name": "mera-apna-khata",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "npm run server & npm run app",
+    "app": "cd ./expo-app && npx expo start",
+    "server": "cd ./go && gow run main.go"
+  }
+}

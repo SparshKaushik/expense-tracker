@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	"github.com/clerkinc/clerk-sdk-go/clerk"
+	"github.com/joho/godotenv"
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -32,6 +33,7 @@ func middleware(next func(w http.ResponseWriter, r *http.Request, ps httprouter.
 }
 
 func main() {
+	godotenv.Load(".env")
 	router := httprouter.New()
 
 	router.GlobalOPTIONS = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

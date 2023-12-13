@@ -3,7 +3,7 @@ package models
 import (
 	"context"
 	"khata-api/db"
-	utils_httpResponse "khata-api/utils/http"
+	utils_http "khata-api/utils/http"
 	"net/http"
 	"strconv"
 
@@ -17,7 +17,7 @@ func GetTag(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *
 	ctx := context.Background()
 	tagID, err := strconv.Atoi(ps.ByName("id"))
 	if err != nil {
-		utils_httpResponse.AbortBadRequest(w)
+		utils_http.AbortBadRequest(w)
 		return
 	}
 	tag, err := client.Tag.FindFirst(
@@ -25,10 +25,10 @@ func GetTag(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *
 		db.Tag.CreatedByID.Equals(user.ID),
 	).Exec(ctx)
 	if err != nil {
-		utils_httpResponse.AbortNotFound(w)
+		utils_http.AbortNotFound(w)
 		return
 	}
-	utils_httpResponse.WriteJsonAfterMarshallOKResponse(w, tag)
+	utils_http.WriteJsonAfterMarshallOKResponse(w, tag)
 }
 
 func GetTags(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *clerk.User) {
@@ -39,8 +39,8 @@ func GetTags(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user 
 		db.Tag.CreatedByID.Equals(user.ID),
 	).Exec(ctx)
 	if err != nil {
-		utils_httpResponse.AbortNotFound(w)
+		utils_http.AbortNotFound(w)
 		return
 	}
-	utils_httpResponse.WriteJsonAfterMarshallOKResponse(w, tags)
+	utils_http.WriteJsonAfterMarshallOKResponse(w, tags)
 }
