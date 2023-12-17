@@ -15,7 +15,26 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	fmt.Fprint(w, "Welcome!\n")
+	fmt.Fprintf(w, `
+		<h1>Bruv, What u doin here?</h1>
+		<script>
+			setTimeout(() => {
+				document.getElementsByTagName('h1')[0].innerHTML += '<br><br>fr?'
+			}, 2000)
+			setTimeout(() => {
+				document.getElementsByTagName('h1')[0].innerHTML += '<br><br>u still here?'
+			}, 3000)
+			setTimeout(() => {
+				document.getElementsByTagName('h1')[0].innerHTML += '<br><br>go away'
+			}, 5000)
+			setTimeout(() => {
+				document.getElementsByTagName('h1')[0].innerHTML += '<br><br><br>go do something else<br>don\'t just sit here staring at a screen till you are 60<br>(insert some wobble)<br>go on a hike, touch some grass<br>get a life bro'
+			}, 7000)
+			setTimeout(() => {
+				document.getElementsByTagName('h1')[0].innerHTML += '<br><br>fr tho<br>there is nothing here'
+			}, 9000)
+		</script>
+	`)
 }
 
 func middleware(next func(w http.ResponseWriter, r *http.Request, ps httprouter.Params, user *clerk.User)) httprouter.Handle {
@@ -60,6 +79,11 @@ func main() {
 
 	router.GET("/tag", middleware(models.GetTags))
 	router.GET("/tag/:id", middleware(models.GetTag))
+	router.POST("/tag", middleware(models.CreateTag))
+
+	router.GET("/category", middleware(models.GetCategories))
+	router.GET("/category/:id", middleware(models.GetCategory))
+	router.POST("/category", middleware(models.CreateCategory))
 
 	log.Println("Listening on port 3000")
 	log.Println("URL: http://localhost:3000")

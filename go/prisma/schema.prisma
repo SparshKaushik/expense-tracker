@@ -10,7 +10,7 @@ datasource db {
 }
 
 model Category {
-    id        Int      @id @unique
+    id        Int      @id @unique @default(autoincrement())
     name      String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -23,9 +23,9 @@ model Category {
 }
 
 model Tag {
-    id        Int      @id @unique
+    id        Int      @id @unique @default(autoincrement())
     name      String
-    favourite Int
+    used      Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
@@ -33,6 +33,34 @@ model Tag {
     createdById String
 
     @@index([name])
+    @@index([createdById])
+}
+
+model MonthyCategoryBudget {
+    id        Int      @id @unique @default(autoincrement())
+    name      String
+    amount    Float
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([name])
+    @@index([createdById])
+}
+
+model MonthlyBalance {
+    id        Int      @id @unique @default(autoincrement())
+    month     DateTime
+    amount    Float
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation(fields: [createdById], references: [id])
+    createdById String
+
+    @@index([month])
     @@index([createdById])
 }
 
@@ -57,12 +85,14 @@ model Expense {
 }
 
 model User {
-    id       String     @id
-    name     String
-    email    String     @unique
-    image    String?
-    funds    Int?
-    Expenses Expense[]
-    Tag      Tag[]
-    Category Category[]
+    id             String                 @id @unique
+    name           String
+    email          String                 @unique
+    image          String?
+    funds          Int?
+    Expenses       Expense[]
+    Tag            Tag[]
+    Category       Category[]
+    MonthyBudget   MonthyCategoryBudget[]
+    MonthlyBalance MonthlyBalance[]
 }

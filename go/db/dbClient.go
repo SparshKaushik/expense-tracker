@@ -8,7 +8,7 @@ import (
 
 func GetNewClient(w http.ResponseWriter) (*PrismaClient, func()) {
 	client := NewClient()
-	if err := client.Prisma.Connect(); err != nil {
+	if err := client.Prisma.Connect(); err != nil && w != nil {
 		utils_http.AbortInternalServerError(w)
 	}
 	deferFunc := func() {
